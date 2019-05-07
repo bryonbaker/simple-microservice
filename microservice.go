@@ -2,60 +2,55 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 )
 
 type Request struct {
-	Text string `json:"text,omitempty"`
+	ClientId string `json:"clientId,omitempty"`
 }
 
 type Response struct {
-	Text string `json:"text,omitempty"`
+	ServiceVersion string `json:"serviceVersion,omitempty"`
 }
 
-var version string = "1.0"
+var version string = "1.1"
 
-func HomeHandlerWithKey(w http.ResponseWriter, req *http.Request) {
-	params := mux.Vars(req)
-
-	json.NewEncoder(w).Encode(version)
-}
-
+/// This is the simple request handler that takes no onput parameters.
 func HomeHandler(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(version)
 }
 
-/*
-func CreatePersonEndpoint(w http.ResponseWriter, req *http.Request) {
-    params := mux.Vars(req)
-    var person Person
-    _ = json.NewDecoder(req.Body).Decode(&person)
-    person.ID = params["id"]
-    people = append(people, person)
-    json.NewEncoder(w).Encode(people)
-}
+/// Handle the request that has an input parameter of the client ID.
+func HomeHandlerWithKey(w http.ResponseWriter, req *http.Request) {
 
-func DeletePersonEndpoint(w http.ResponseWriter, req *http.Request) {
-    params := mux.Vars(req)
-    for index, item := range people {
-        if item.ID == params["id"] {
-            people = append(people[:index], people[index+1:]...)
-            break
-        }
-    }
-    json.NewEncoder(w).Encode(people)
-}*/
+	fmt.Print(".")
+	var unknownList string = ""
+	params := mux.Vars(req)
+	// If clientId is in the parameters, process the request.
+	if parm, ok := params["clientId"]; ok {
+		fmt.Println("Request received with key: ", params[parm])
+	} else {
+		unknownList += parm + " "
+	}
+
+	// Dump out the list of unknown input params
+	if unknownList != "" {
+		fmt.Println("Unknown input parameter: ", unknownList)
+		fmt.Fprintf(os.Stderr, "Unknown input parameter: ", unknownList)
+	}
+
+	// Build the response.
+	json.NewEncoder(w).Encode(version)
+}
 
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", HomeHandler).Methods("GET")
 	router.HandleFunc("/{key}", HomeHandlerWithKey).Methods("GET")
-	// router.HandleFunc("/simple", SimpleRequest).Methods("GET")
-	// router.HandleFunc("/simple/{id}", SimpleRequestWithId).Methods("GET")
-	// router.HandleFunc("/simple/{id}", CreatePersonEndpoint).Methods("POST")
-	// router.HandleFunc("/simple/{id}", DeletePersonEndpoint).Methods("DELETE")
-	log.Fatal(http.ListenAndServe(":12345", router))
+	log.Fatal(http.ListenAndServe(":10000", router))
 }
