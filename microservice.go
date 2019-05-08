@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -45,9 +46,10 @@ func HomeHandlerWithKey(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	fmt.Println("Simple microservice starting.") /*
-		router := mux.NewRouter()
-		router.HandleFunc("/", HomeHandler).Methods("GET")
-		router.HandleFunc("/{key}", HomeHandlerWithKey).Methods("GET")
-		log.Fatal(http.ListenAndServe(":10000", router)) */
+	fmt.Println("Simple microservice starting.")
+
+	router := mux.NewRouter()
+	router.HandleFunc("/", HomeHandler).Methods("GET")
+	router.HandleFunc("/{key}", HomeHandlerWithKey).Methods("GET")
+	log.Fatal(http.ListenAndServe(":10000", router))
 }

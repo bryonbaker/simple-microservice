@@ -4,6 +4,7 @@ RUN mkdir -p /go/src/
 WORKDIR /go/src/go_docker
 # RUN git clone -b master --single-branch https://github.com/bryonbaker/simple-microservice.git /go/src/go_docker/ \
 RUN git clone https://github.com/bryonbaker/simple-microservice.git /go/src/go_docker/ \
+# RUN git clone git@github.com:bryonbaker/simple-microservice.git /go/src/go_docker/ \
 && CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 RUN go get github.com/gorilla/mux
 RUN go build -o bin/go_docker
