@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
@@ -27,8 +26,6 @@ func HomeHandler(w http.ResponseWriter, req *http.Request) {
 
 /// Handle the request that has an input parameter of the client ID.
 func HomeHandlerWithKey(w http.ResponseWriter, req *http.Request) {
-
-	fmt.Print(".")
 	var unknownList string = ""
 	params := mux.Vars(req)
 	// If clientId is in the parameters, process the request.
@@ -40,7 +37,6 @@ func HomeHandlerWithKey(w http.ResponseWriter, req *http.Request) {
 
 	// Dump out the list of unknown input params
 	if unknownList != "" {
-		fmt.Println("Unknown input parameter: ", unknownList)
 		fmt.Fprintf(os.Stderr, "Unknown input parameter: ", unknownList)
 	}
 
@@ -49,8 +45,9 @@ func HomeHandlerWithKey(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	router := mux.NewRouter()
-	router.HandleFunc("/", HomeHandler).Methods("GET")
-	router.HandleFunc("/{key}", HomeHandlerWithKey).Methods("GET")
-	log.Fatal(http.ListenAndServe(":10000", router))
+	fmt.Println("Simple microservice starting.") /*
+		router := mux.NewRouter()
+		router.HandleFunc("/", HomeHandler).Methods("GET")
+		router.HandleFunc("/{key}", HomeHandlerWithKey).Methods("GET")
+		log.Fatal(http.ListenAndServe(":10000", router)) */
 }
