@@ -1,22 +1,25 @@
-FROM golang as goimage
-ENV SRC=/go/src/
-RUN mkdir -p /go/src/
-WORKDIR /go/src/go_docker
-# RUN git clone -b master --single-branch https://github.com/bryonbaker/simple-microservice.git /go/src/go_docker/ \
-RUN git clone https://github.com/bryonbaker/simple-microservice.git /go/src/go_docker/ \
-&& CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+FROM golang as builder
+
+# Use standard $GOPATH layout?
+# WORKDIR /go/src/github.com/byronbaker/simple-microservice
+# COPY . .
+# RUN go get .
+# RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go install .
+
+# !!! Docker layer caching will not repeat this step if the repo changes
+# !!! You won't be able to build a test copy of your uncommitted code
+RUN git clone https://github.com/bryonbaker/simple-microservice.git /go/src/go_docker
 RUN go get github.com/gorilla/mux
-RUN go build -o bin/go_docker
 
-FROM alpine:latest AS microservice
-RUN apk --no-cache add bash
-ENV WORK_DIR=/docker/bin
-WORKDIR $WORK_DIR
-COPY --from=goimage /go/src/go_docker/bin/ ./
+# vvv Put magic environment variables in this line
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go install go_docker
+# ^^^
 
-# Put a container-image version identifier in the root directory.
+# Runtime image
+FROM alpine:latest
+COPY --from=builder /go/bin/go_docker /bin/go_docker
 ARG VERSION=1.0
-RUN echo $VERSION > image_version
-
+RUN echo $VERSION > /image_version
 EXPOSE 10000
-#CMD ["go_docker"]
+WORKDIR "/bin"
+CMD ["go_docker"]
