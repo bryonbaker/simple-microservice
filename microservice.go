@@ -18,10 +18,11 @@ type Response struct {
 	ServiceVersion string `json:"serviceVersion,omitempty"`
 }
 
-var version string = "1.1"
+var version string = "1.2"
 
 /// This is the simple request handler that takes no onput parameters.
 func HomeHandler(w http.ResponseWriter, req *http.Request) {
+	fmt.Println("HomeHandler()")
 	json.NewEncoder(w).Encode(version)
 }
 
@@ -38,6 +39,7 @@ func HomeHandlerWithKey(w http.ResponseWriter, req *http.Request) {
 
 	// Dump out the list of unknown input params
 	if unknownList != "" {
+		fmt.Println("Unknown input parameter: ", unknownList)
 		fmt.Fprintf(os.Stderr, "Unknown input parameter: ", unknownList)
 	}
 
@@ -46,7 +48,7 @@ func HomeHandlerWithKey(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	fmt.Println("Simple microservice starting.")
+	fmt.Println("Simple microservice starting. Version: ", version)
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", HomeHandler).Methods("GET")
