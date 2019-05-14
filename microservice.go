@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -18,7 +19,7 @@ type Response struct {
 	ServiceVersion string `json:"serviceVersion,omitempty"`
 }
 
-var version string = "1.2"
+var version string = "1.3c"
 
 /// This is the simple request handler that takes no onput parameters.
 func HomeHandler(w http.ResponseWriter, req *http.Request) {
@@ -31,8 +32,8 @@ func HomeHandlerWithKey(w http.ResponseWriter, req *http.Request) {
 	var unknownList string = ""
 	params := mux.Vars(req)
 	// If clientId is in the parameters, process the request.
-	if parm, ok := params["clientId"]; ok {
-		fmt.Println("Request received with key: ", params[parm])
+	if parm, ok := params["key"]; ok {
+		fmt.Println("Request received with key: ", parm)
 	} else {
 		unknownList += parm + " "
 	}
@@ -51,7 +52,17 @@ func main() {
 	fmt.Println("Simple microservice starting. Version: ", version)
 
 	router := mux.NewRouter()
-	router.HandleFunc("/", HomeHandler).Methods("GET")
-	router.HandleFunc("/{key}", HomeHandlerWithKey).Methods("GET")
-	log.Fatal(http.ListenAndServe(":10000", router))
+	corsMw := mux.CORSMethodMiddleware(router)
+
+	router.HandleFunc("/", HomeHandler).Methods("GET", "OPTIONS")
+	router.HandleFunc("/{key}", HomeHandlerWithKey).Methods("GET", "OPTIONS")
+
+	router.Use(corsMw)
+
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
+	log.Fatal(http.ListenAndServe(":10000", handlers.CORS(originsOk, headersOk, methodsOk)(router)))
+	// log.Fatal(http.ListenAndServe(":10000", router))
 }
