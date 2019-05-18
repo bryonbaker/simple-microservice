@@ -11,20 +11,33 @@ import (
 	"github.com/gorilla/mux"
 )
 
+/*
 type Request struct {
 	ClientId string `json:"clientId,omitempty"`
 }
+*/
 
+// The response to retutn for the HTML GET
 type Response struct {
 	ServiceVersion string `json:"serviceVersion,omitempty"`
 }
 
+// The version of this release.
 var version string = "1.3c"
+
+// Builds the json response string.
+func BuildResponse() Response {
+	var resp Response
+
+	resp.ServiceVersion = version
+
+	return resp
+}
 
 /// This is the simple request handler that takes no onput parameters.
 func HomeHandler(w http.ResponseWriter, req *http.Request) {
 	fmt.Println("HomeHandler()")
-	json.NewEncoder(w).Encode(version)
+	json.NewEncoder(w).Encode(BuildResponse())
 }
 
 /// Handle the request that has an input parameter of the client ID.
@@ -45,7 +58,7 @@ func HomeHandlerWithKey(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Build the response.
-	json.NewEncoder(w).Encode(version)
+	json.NewEncoder(w).Encode(BuildResponse())
 }
 
 func main() {
