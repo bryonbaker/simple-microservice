@@ -13,7 +13,7 @@ function ready(fn) {
 
 var maxX = 5;
 var maxY = 5;
-var cycleTimeout = 500;
+var cycleTimeout = 200;
 
 
 function onready() {

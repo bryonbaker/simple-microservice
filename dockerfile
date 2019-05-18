@@ -4,6 +4,7 @@ FROM golang as builder
 # !!! You won't be able to build a test copy of your uncommitted code
 RUN git clone https://github.com/bryonbaker/simple-microservice.git /go/src/go_docker
 RUN go get github.com/gorilla/mux
+RUN go get github.com/gorilla/handlers
 
 # vvv Put magic environment variables in this line
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go install go_docker
@@ -16,4 +17,5 @@ ARG VERSION=1.2
 RUN echo $VERSION > /image_version
 EXPOSE 10000
 WORKDIR "/bin"
+COPY ./config.json /bin
 CMD ["go_docker"]
