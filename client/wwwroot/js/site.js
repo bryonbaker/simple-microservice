@@ -64,9 +64,9 @@ function cycler() {
 function query(box, x, y) {
     var request = new XMLHttpRequest();
     box.classList.add('loading');
-    request.open('POST', '/api/count', true);
+    //request.open('POST', '/api/count', true);
     request.open('GET', 'http://localhost:10000', true);
-    //request.setRequestHeader('Content-Type', 'application/json');
+    request.setRequestHeader('Content-Type', 'application/json');
 
     request.onload = function () {
         if (request.status >= 200 && request.status < 400) {
