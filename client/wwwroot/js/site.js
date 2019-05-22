@@ -11,10 +11,10 @@ function ready(fn) {
     }
 }
 
-var maxX = 5;
-var maxY = 5;
-var cycleTimeout = 200;
-
+var maxX = 20;
+var maxY = 20;
+var cycleTimeout = 1;
+var boxCache = {};
 
 function onready() {
     let boxes = document.getElementById("boxes");
@@ -32,6 +32,8 @@ function onready() {
             box.id = "_x" + x + "_y" + y;
             box.innerText = box.id;
             row.append(box);
+
+            boxCache[box.id] = box;
         }
     }
 
@@ -52,7 +54,7 @@ function cycler() {
     }
 
     let boxId = "_x" + cycleX + "_y" + cycleY;
-    let box = document.getElementById(boxId);
+    let box = boxCache[boxId];
 
     query(box, cycleX, cycleY);
 
@@ -62,7 +64,7 @@ function cycler() {
 function query(box, x, y) {
     var request = new XMLHttpRequest();
     box.classList.add('loading');
-    // request.open('POST', '/api/count', true);
+    //request.open('POST', '/api/count', true);
     request.open('GET', 'http://localhost:10000', true);
     request.setRequestHeader('Content-Type', 'application/json');
 
