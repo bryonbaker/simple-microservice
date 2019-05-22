@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simplemicroservice
+  labels:
+    type: simpleservice       # This line needs to match the selector in the Service.
+spec:
+  containers:
+  - name: simplemicroservice
+    image: simplemicroservice:1.0
+    ports:
+    - containerPort: 10000
