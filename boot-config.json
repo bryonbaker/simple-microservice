@@ -1,5 +1,5 @@
 {
    "config-path" : "/data/app-config.json",
    "version-env-var-name" : "MICROSERVICE_VERSION",
-   "default-version": "0.2(def)"
+   "default-version": "0.3(def)"
 }
