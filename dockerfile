@@ -2,7 +2,7 @@ FROM golang as builder
 
 # !!! Docker layer caching will not repeat this step if the repo changes
 # !!! You won't be able to build a test copy of your uncommitted code
-RUN git clone https://github.com/bryonbaker/simple-microservice.git /go/src/go_docker
+RUN git clone https://github.com/bryonbaker/simple-microservice.git --branch v0.3 /go/src/go_docker
 RUN go get github.com/gorilla/mux
 RUN go get github.com/gorilla/handlers
 
