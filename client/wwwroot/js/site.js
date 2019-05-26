@@ -11,9 +11,9 @@ function ready(fn) {
     }
 }
 
-var maxX = 20;
-var maxY = 20;
-var cycleTimeout = 1;
+var maxX = 5;
+var maxY = 5;
+var cycleTimeout = 250;
 var boxCache = {};
 
 function onready() {
