@@ -36,7 +36,7 @@ type ApplicationConfiguration struct {
 
 // Response defines the format of the HTML json response.
 type Response struct {
-	ServiceVersion string `json:"version,omitempty"`
+	ServiceVersion string `json:"id,omitempty"`
 }
 
 // Global variable definitions.
