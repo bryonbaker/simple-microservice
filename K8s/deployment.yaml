@@ -1,11 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: simpledimple
+  name: simpleservice-deployment
+  labels:
+    # Label selector for pods. Existing ReplicaSets whose pods are selected by this
+    # will be the ones affected by this deployment. It must match the pod template's labels.
+    app: simpleservice
 spec:
-  replicas: 2
+  replicas: 3
   selector:
-    # Label selector for pods. Existing ReplicaSets whose pods are selected by this will be the ones affected by this deployment. It must match the pod template's labels.
     matchLabels:
       app: simpleservice
   template:
@@ -13,8 +16,10 @@ spec:
       labels:
         app: simpleservice
     spec:
-      containers:
-      - name: simpleservice    
-        image: simplemicroservice:1.0
+      containers:  
+      - name: simplemicroservice
+        image: 10.10.0.100:6088/microservice:0.2
         ports:
         - containerPort: 10000
+        # Hard code the node port so it is easier for test cases.
+        - nodePort: 32000
