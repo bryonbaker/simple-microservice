@@ -18,4 +18,3 @@ spec:
         image: simplemicroservice:1.0
         ports:
         - containerPort: 10000
-
