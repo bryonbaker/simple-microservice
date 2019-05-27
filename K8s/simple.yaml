@@ -10,3 +10,12 @@ spec:
     image: simplemicroservice:1.0
     ports:
     - containerPort: 10000
+    volumeMounts:
+    - name: test-volume
+      mountPath: /data
+  volumes:
+  - name: test-volume
+    hostPath:
+      path: /test-volume-mount
+      type: DirectoryOrCreate
+
