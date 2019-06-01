@@ -18,5 +18,5 @@ RUN echo $VERSION > /image_version
 EXPOSE 10000
 WORKDIR "/bin"
 COPY ./boot-config.json /bin/
-COPY ./app-config.json /data/
+#COPY ./app-config.json /data/
 CMD ["go_docker"]

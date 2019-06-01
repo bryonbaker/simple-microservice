@@ -16,9 +16,9 @@ spec:
       labels:
         app: simpleservice
     spec:
-      containers:  
-      - name: simplemicroservice
-        image: 10.10.0.100:6088/microservice:0.2
+      containers:
+      - name: simpleservice    
+        image: simplemicroservice:0.3
         ports:
         - containerPort: 10000
         # Hard code the node port so it is easier for test cases.

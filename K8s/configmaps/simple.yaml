@@ -8,15 +8,12 @@ metadata:
 spec:
   containers:
   - name: simplemicroservice
-    image: 10.10.0.100:6088/microservice:0.2
+    image: 10.10.0.100:6088/microservice:0.3
     ports:
     - containerPort: 10000
-    volumeMounts:
-    - name: test-volume
-      mountPath: /data
-  volumes:
-  - name: test-volume
-    hostPath:
-      path: /test-volume-mount
-      type: DirectoryOrCreate
-
+    env:
+    - name: MICROSERVICE_VERSION
+      valueFrom:
+        configMapKeyRef: 
+          name: simplemicroservice-config
+          key: service.version
