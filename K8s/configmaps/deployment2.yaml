@@ -15,6 +15,12 @@ spec:
     spec:
       containers:
       - name: simpleservice    
-        image: simplemicroservice:0.3
+        image: 10.10.0.100:6088/microservice:0.3
         ports:
         - containerPort: 10000
+        env:
+          - name: MICROSERVICE_VERSION
+            valueFrom:
+              configMapKeyRef:
+                name: simplemicroservice-config2
+                key: service.version

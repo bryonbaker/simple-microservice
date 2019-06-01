@@ -3,15 +3,17 @@ kind: Pod
 metadata:
   name: simplemicroservice
   labels:
-    type: simpleservice       # This line needs to match the selector in the Service.
+    # key/value needs to match the selector in the Service.
+    app: simpleservice
 spec:
   containers:
   - name: simplemicroservice
-    image: 10.10.0.100:6088/microservice
+    image: 10.10.0.100:6088/microservice:0.3
     ports:
     - containerPort: 10000
     env:
     - name: MICROSERVICE_VERSION
-      value: 1.9
-
-
+      valueFrom:
+        configMapKeyRef: 
+          name: simplemicroservice-config
+          key: service.version

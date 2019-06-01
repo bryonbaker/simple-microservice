@@ -1,36 +1,26 @@
-apiVersion: v1
-items:
-# Define the deployment.
-- apiVersion: apps/v1
-  kind: Deployment
-  metadata:
-    name: simpledimple
-  spec:
-    replicas: 3
-    selector:
-      # Label selector for pods. Existing ReplicaSets whose pods are selected by this will be the ones affected by this deployment. It must match the pod template's labels.
-      matchLabels:
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpledimple
+spec:
+  replicas: 3
+  selector:
+    # Label selector for pods. Existing ReplicaSets whose pods are selected by this will be the ones affected by this deployment. It must match the pod template's labels.
+    matchLabels:
+      app: simpleservice
+  template:
+    metadata:
+      labels:
         app: simpleservice
-    template:
-      metadata:
-        labels:
-          app: simpleservice
-      spec:
-        containers:
-        - name: simpleservice    
-          image: 10.10.0.100:6088/microservice:0.3
-          ports:
-          - containerPort: 10000
-        volumes:
-        - name: simpleservice-claim0
-          persistentVolumeClaim:
-            claimName: simpleservice-claim0
-            readOnly: false
-# Create the config map for the deployment.
-- apiVersion: apps/v1
-  kind: ConfigMap
-  metadata:
-    name: service-version
-    namespace: default
-  data:
-    version: 0.4
+    spec:
+      containers:
+      - name: simpleservice    
+        image: 10.10.0.100:6088/microservice:0.3
+        ports:
+        - containerPort: 10000
+        env:
+          - name: MICROSERVICE_VERSION
+            valueFrom:
+              configMapKeyRef:
+                name: simplemicroservice-config
+                key: service.version
