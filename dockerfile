@@ -13,7 +13,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go install go_docker
 # Runtime image
 FROM alpine:latest
 COPY --from=builder /go/bin/go_docker /bin/go_docker
-ARG VERSION=1.2
+ARG VERSION=1.0
 RUN echo $VERSION > /image_version
 EXPOSE 10000
 WORKDIR "/bin"
