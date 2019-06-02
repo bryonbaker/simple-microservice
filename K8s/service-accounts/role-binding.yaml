@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: secret-rb
+subjects:
+- kind: ServiceAccount
+  name: secret-access-sa
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: secret-access-cr
+  # This is not really required because it refaults to: rbac.authorization.k8s.io
+  apiGroup: rbac.authorization.k8s.io
