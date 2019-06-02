@@ -1,8 +1,0 @@
-# Create the config map for the deployment.
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: simplemicroservice-config2
-  namespace: default
-data:
-  service.version: "1.1"
