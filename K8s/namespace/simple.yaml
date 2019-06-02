@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpledevmicroservice
+  # To access this namespace you need to run "kubectl context current-context" and use the output in the following command:
+  # kubectl config set-context <current context> --namespace development"
+  # TODO: Add roles, and users to limit cluster access in the namespace
+  namespace: development
+  labels:
+    # key/value needs to match the selector in the Service.
+    app: simpleservice
+spec:
+  containers:
+  - name: simplemicroservice
+    image: 10.10.0.100:6088/simplemicroservice:1.0
+    ports:
+    - containerPort: 10000
