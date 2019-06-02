@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: config1-service
+  spec:
+    replicas: 3
+    selector:
+      # Label selector for pods. Existing ReplicaSets whose pods are selected by this will be the ones affected by this deployment. It must match the pod template's labels.
+      matchLabels:
+        app: config1-service
+    template:
+      metadata:
+        labels:
+          app: config1-service
+      spec:
+        containers:
+        - name: config1-service
+          image: 10.10.0.100:6088/simplemicroservice:1.0
+          ports:
+          - containerPort: 10000
+          env:
+            - name: MICROSERVICE_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  name: simplemicroservice-config1
+                  key: service.version
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: config2-service
+  spec:
+    replicas: 3
+    selector:
+      # Label selector for pods. Existing ReplicaSets whose pods are selected by this will be the ones affected by this deployment. It must match the pod template's labels.
+      matchLabels:
+        app: config2-service
+    template:
+      metadata:
+        labels:
+          app: config2-service
+      spec:
+        containers:
+        - name: config2-service   
+          image: 10.10.0.100:6088/simplemicroservice:1.0
+          ports:
+          - containerPort: 10001
+          env:
+            - name: MICROSERVICE_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  name: simplemicroservice-config2
+                  key: service.version

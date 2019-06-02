@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleconfigexample
+spec:
+  containers:
+  - name: simplemicroservice
+    image: 10.10.0.100:6088/simplemicroservice:1.0
+    ports:
+    - containerPort: 10000
+    env:
+    - name: MICROSERVICE_VERSION
+      valueFrom:
+        configMapKeyRef: 
+          name: simplemicroservice-config1
+          key: service.version
