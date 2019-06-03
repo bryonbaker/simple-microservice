@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: simpleservice    
-        image: simplemicroservice:0.3
+        image: 10.10.0.100:6088/simplemicroservice:1.0
         ports:
         - containerPort: 10000
         # Hard code the node port so it is easier for test cases.
