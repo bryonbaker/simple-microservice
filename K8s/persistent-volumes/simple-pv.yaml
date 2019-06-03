@@ -11,15 +11,15 @@ items:
       image: 10.10.0.100:6088/simplemicroservice:1.0
       ports:
       - containerPort: 10000
-      readinessProbe:
-        httpGet:
-          path: "/"
-          port: 10000
-      livenessProbe:
-        httpGet:
-          path: "/liveness"
-          port: 10000
-        periodSeconds: 15
+      # readinessProbe:
+      #   httpGet:
+      #     path: "/"
+      #     port: 10001
+      # livenessProbe:
+      #   httpGet:
+      #     path: "/liveness"
+      #     port: 10001
+      #   periodSeconds: 15
       resources:
         limits:
           cpu: 1
@@ -27,10 +27,15 @@ items:
       volumeMounts:
         - name: logging-vol
           mountPath: /logs
+        - name: local-storage-vol
+          mountPath: /local-storage-vol
     volumes:
     - name: logging-vol
       persistentVolumeClaim:
         claimName: logging-pvc
+    - name: local-storage-vol
+      persistentVolumeClaim:
+        claimName: local-storage-pvc
 
 - apiVersion: v1
   kind: PersistentVolumeClaim
@@ -59,3 +64,40 @@ items:
       readOnly: false
     capacity:
       storage: 1Gi
+
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: local-storage-pvc
+  spec:
+    accessModes:
+    - ReadWriteMany
+    storageClassName: local-storage
+    resources:
+      requests:
+        storage: 200Mi
+
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: local-pv
+  spec:
+    accessModes:
+      - "ReadWriteMany"
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: local-storage
+    capacity:
+      storage: 1Gi
+    local:
+      fsType: ext4
+      path: /K8s-Storage
+    nodeAffinity:
+      required:
+        # https://kubernetes.io/blog/2018/04/13/local-persistent-volumes-beta/
+        # get the info from "kubectl cluster-info dump -o yaml" and look under the nodes labels.
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - macmini
