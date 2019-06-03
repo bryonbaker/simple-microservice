@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    name: simple-pv-service
+  spec:
+    containers:
+    - name: simplemicroservice
+      image: 10.10.0.100:6088/simplemicroservice:1.0
+      ports:
+      - containerPort: 10000
+      readinessProbe:
+        httpGet:
+          path: "/"
+          port: 10000
+      livenessProbe:
+        httpGet:
+          path: "/liveness"
+          port: 10000
+        periodSeconds: 15
+      resources:
+        limits:
+          cpu: 1
+          memory: 1Gi
+      volumeMounts:
+        - name: logging-vol
+          mountPath: /logs
+    volumes:
+    - name: logging-vol
+      persistentVolumeClaim:
+        claimName: logging-pvc
+
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: logging-pvc
+  spec:
+    accessModes:
+    - ReadWriteMany
+    # selector: logging-pv
+    volumeName: logging-pv
+    resources:
+      requests:
+        storage: 200Mi
+
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: logging-pv
+  spec:
+    accessModes:
+      - "ReadWriteMany"
+    persistentVolumeReclaimPolicy: Retain
+    nfs:
+      server: 10.10.0.100
+      path: /K8s-Training/opt/logs
+      readOnly: false
+    capacity:
+      storage: 1Gi

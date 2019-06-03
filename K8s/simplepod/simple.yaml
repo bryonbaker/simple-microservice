@@ -20,3 +20,7 @@ spec:
         path: "/liveness"
         port: 10000
       periodSeconds: 15
+    resources:
+      limits:
+        cpu: 1
+        memory: "1Gi"
