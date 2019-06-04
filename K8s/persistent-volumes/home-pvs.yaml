@@ -30,6 +30,7 @@ items:
     storageClassName: local-storage
     capacity:
       storage: 1Gi
+    # Use a node's local storage. Which node is determined by the nodeAffinity rule below.
     local:
       fsType: ext4
       path: /K8s-Storage
