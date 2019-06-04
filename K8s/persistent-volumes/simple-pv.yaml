@@ -44,26 +44,13 @@ items:
   spec:
     accessModes:
     - ReadWriteMany
+    # this may cause an issue when run with a different PV
+    storageClassName: local-storage
     # selector: logging-pv
     volumeName: logging-pv
     resources:
       requests:
         storage: 200Mi
-
-- apiVersion: v1
-  kind: PersistentVolume
-  metadata:
-    name: logging-pv
-  spec:
-    accessModes:
-      - "ReadWriteMany"
-    persistentVolumeReclaimPolicy: Retain
-    nfs:
-      server: 10.10.0.100
-      path: /K8s-Training/opt/logs
-      readOnly: false
-    capacity:
-      storage: 1Gi
 
 - apiVersion: v1
   kind: PersistentVolumeClaim
@@ -72,32 +59,8 @@ items:
   spec:
     accessModes:
     - ReadWriteMany
+    # this may cause an issue when run with a different PV
     storageClassName: local-storage
     resources:
       requests:
         storage: 200Mi
-
-- apiVersion: v1
-  kind: PersistentVolume
-  metadata:
-    name: local-pv
-  spec:
-    accessModes:
-      - "ReadWriteMany"
-    persistentVolumeReclaimPolicy: Retain
-    storageClassName: local-storage
-    capacity:
-      storage: 1Gi
-    local:
-      fsType: ext4
-      path: /K8s-Storage
-    nodeAffinity:
-      required:
-        # https://kubernetes.io/blog/2018/04/13/local-persistent-volumes-beta/
-        # get the info from "kubectl cluster-info dump -o yaml" and look under the nodes labels.
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.io/hostname
-            operator: In
-            values:
-            - macmini

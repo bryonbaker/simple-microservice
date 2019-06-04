@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: List
+items:
+
+# This PV is created on the NAS. This will fail on any other cluster.
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: logging-pv
+  spec:
+    accessModes:
+      - "ReadWriteMany"
+    persistentVolumeReclaimPolicy: Retain
+    nfs:
+      server: 10.10.0.100
+      path: /K8s-Training/opt/logs
+      readOnly: false
+    capacity:
+      storage: 1Gi
+
+# This PV uses local storage bound to a particular node. TYhis will fail on any other cluster.
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: local-pv
+  spec:
+    accessModes:
+      - "ReadWriteMany"
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: local-storage
+    capacity:
+      storage: 1Gi
+    local:
+      fsType: ext4
+      path: /K8s-Storage
+    nodeAffinity:
+      required:
+        # https://kubernetes.io/blog/2018/04/13/local-persistent-volumes-beta/
+        # get the info from "kubectl cluster-info dump -o yaml" and look under the nodes labels.
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - macmini

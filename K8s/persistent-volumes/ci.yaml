@@ -1,3 +1,5 @@
+# This YAML file is a dump of the entire cluster.  It is checked into git because it shows the 
+# Object hierarchy for the Node Selector.
 apiVersion: v1
 items:
 - metadata:
