@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: batch/v1
+  kind: Job
+  metadata: 
+    name: sleep-job
+  spec:
+    completions: 5
+    parallelism: 2
+    activeDeadlineSeconds: 10
+    template:
+      spec:
+        containers:
+        - name: sleepy
+          image: busybox:latest
+          command: ["/bin/sleep"]
+          args: ["10"]
+        restartPolicy: Never
+      
