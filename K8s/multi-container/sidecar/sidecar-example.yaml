@@ -31,6 +31,8 @@ items:
         
 - apiVersion: v1
   kind: PersistentVolume
+  # This Persistent Volume is not really needed for the sidecar butis a good way 
+  # to illustrate NFS-based persistent volumes in the one spec.
   metadata:
     name: sidecar-example-logs-pv
   spec:
