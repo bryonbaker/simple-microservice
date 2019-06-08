@@ -34,7 +34,7 @@ items:
   metadata:
     name: fluentd-config
   data:
-    fluentd.conf: |
+    fluent.conf: |
       <source>
         @type tail
         format none
@@ -42,11 +42,7 @@ items:
         tag count.format1
       </source>
       <match *.**>
-        @type forward
-        <server>
-          name localhost
-          host 127.0.0.1
-        </server>
+        @type stdout
       </match>
 
 - apiVersion: v1
@@ -67,13 +63,14 @@ items:
     - name: fdlogger
       env:
         - name: FLUENTD_ARGS
-          value: -c /etc/fluentd-config/fluentd.conf
+          value: -c /etc/fluentd-config/fluent.conf
       image: fluent/fluentd
       volumeMounts:
       - name: logging-vol
         mountPath: /var/log/nginx
       - name: log-config
-        mountPath: /etc/fluentd-config
+        # mountPath: /etc/fluentd-config
+        mountPath: /fluentd/etc
     volumes:
       - name: logging-vol
         persistentVolumeClaim: 
