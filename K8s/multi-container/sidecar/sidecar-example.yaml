@@ -16,7 +16,7 @@ items:
       type: DirectoryOrCreate
     capacity: 
       storage: 500Mi
-
+ 
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
@@ -28,6 +28,32 @@ items:
     resources:
       requests:
         storage: 200Mi
+        
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: sidecar-example-logs-pv
+  spec:
+    accessModes: 
+    - ReadWriteMany
+    capacity: 
+      storage: 10Gi
+    nfs:
+      path: /K8s-Training/logs/weblogs
+      server: 10.10.0.100
+    persistentVolumeReclaimPolicy: Retain
+
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: sidecar-example-logs-pvc
+  spec:
+    accessModes:
+    - ReadWriteMany
+    resources:
+      requests:
+        storage: 2Gi
+    volumeName: sidecar-example-logs-pv
 
 - apiVersion: v1
   kind: Pod
@@ -44,10 +70,20 @@ items:
       volumeMounts:
       - name: logging-vol
         mountPath: /var/log/nginx
+    - name: fdlogger
+      image: fluent/fluentd
+      volumeMounts:
+      - name: logging-vol
+        mountPath: /var/log
+      - name: k8s-training-storage
+        mountPath: /tmp/K8s-Training
     volumes:
       - name:  logging-vol
         persistentVolumeClaim: 
           claimName: weblog-pvc
+      - name: k8s-training-storage
+        persistentVolumeClaim:
+          claimName: sidecar-example-logs-pvc
 
 - apiVersion: v1
   kind: Service
@@ -60,4 +96,4 @@ items:
     ports:
     - name:  sidecar-port
       port:  80
-      # targetPort:  8080
+      nodePort:  32000
