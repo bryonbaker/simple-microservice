@@ -28,34 +28,26 @@ items:
     resources:
       requests:
         storage: 200Mi
-        
+  
 - apiVersion: v1
-  kind: PersistentVolume
-  # This Persistent Volume is not really needed for the sidecar butis a good way 
-  # to illustrate NFS-based persistent volumes in the one spec.
+  kind: ConfigMap
   metadata:
-    name: sidecar-example-logs-pv
-  spec:
-    accessModes: 
-    - ReadWriteMany
-    capacity: 
-      storage: 10Gi
-    nfs:
-      path: /K8s-Training/logs/weblogs
-      server: 10.10.0.100
-    persistentVolumeReclaimPolicy: Retain
-
-- apiVersion: v1
-  kind: PersistentVolumeClaim
-  metadata:
-    name: sidecar-example-logs-pvc
-  spec:
-    accessModes:
-    - ReadWriteMany
-    resources:
-      requests:
-        storage: 2Gi
-    volumeName: sidecar-example-logs-pv
+    name: fluentd-config
+  data:
+    fluentd.conf: |
+      <source>
+        @type tail
+        format none
+        path /var/log/nginx/access.log
+        tag count.format1
+      </source>
+      <match *.**>
+        @type forward
+        <server>
+          name localhost
+          host 127.0.0.1
+        </server>
+      </match>
 
 - apiVersion: v1
   kind: Pod
@@ -73,19 +65,22 @@ items:
       - name: logging-vol
         mountPath: /var/log/nginx
     - name: fdlogger
+      env:
+        - name: FLUENTD_ARGS
+          value: -c /etc/fluentd-config/fluentd.conf
       image: fluent/fluentd
       volumeMounts:
       - name: logging-vol
-        mountPath: /var/log
-      - name: k8s-training-storage
-        mountPath: /tmp/K8s-Training
+        mountPath: /var/log/nginx
+      - name: log-config
+        mountPath: /etc/fluentd-config
     volumes:
-      - name:  logging-vol
+      - name: logging-vol
         persistentVolumeClaim: 
           claimName: weblog-pvc
-      - name: k8s-training-storage
-        persistentVolumeClaim:
-          claimName: sidecar-example-logs-pvc
+      - name: log-config
+        configMap:
+          name: fluentd-config
 
 - apiVersion: v1
   kind: Service
