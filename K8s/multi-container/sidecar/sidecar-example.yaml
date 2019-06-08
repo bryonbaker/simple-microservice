@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: weblog-pv
+    labels:
+      type: local
+  spec:
+    storageClassName: manual
+    accessModes: 
+    - ReadWriteOnce
+    hostPath:
+      path: /tmp/weblog
+      type: DirectoryOrCreate
+    capacity: 
+      storage: 500Mi
+
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: weblog-pvc
+  spec:
+    storageClassName: manual
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 200Mi
+
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    name: sidecar-example
+    labels:
+      app: webserver
+  spec:
+    containers:
+    - name: nginx
+      image: nginx:latest
+      ports: 
+      - containerPort: 80
+      volumeMounts:
+      - name: logging-vol
+        mountPath: /var/log/nginx
+    volumes:
+      - name:  logging-vol
+        persistentVolumeClaim: 
+          claimName: weblog-pvc
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: sidecar-svc
+  spec:
+    selector:
+      app:  webserver
+    type: NodePort
+    ports:
+    - name:  sidecar-port
+      port:  80
+      # targetPort:  8080
