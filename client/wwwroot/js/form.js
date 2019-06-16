@@ -1,4 +1,24 @@
-﻿$(function () {
+﻿(function ($) {
+    $.fn.serializeFormJSON = function () {
+
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function () {
+            if (o[this.name]) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+})(jQuery);
+
+
+$(function () {
     console.log('form started');
     $(".hide-me").hide();
     $("form").on("submit", function (e) {
@@ -11,7 +31,7 @@
             type: "post",
             url: "/api/form",
             contentType: "application/json",
-            data: form.serialize(),
+            data: JSON.stringify(form.serializeFormJSON()),
             success: function (data) {
                 $("#_firstNameValid").text("First Name Valid: " + data.validFirstName);
                 $("#_lastNameValid").text("Last Name Valid: " + data.validLastName);
