@@ -16,15 +16,6 @@ items:
       image: 10.10.0.100:6088/simplemicroservice:1.0
       ports:
       - containerPort: 10000
-      # readinessProbe:
-      #   httpGet:
-      #     path: "/"
-      #     port: 10000
-      # livenessProbe:
-      #   httpGet:
-      #     path: "/liveness"
-      #     port: 10000
-      #   periodSeconds: 15
       resources:
         limits:
           cpu: 1

@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: simpleservice-deployment
+    labels:
+      # Label selector for pods. Existing ReplicaSets whose pods are selected by this
+      # will be the ones affected by this deployment. It must match the pod template's labels.
+      app: simpleservice
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: simpleservice
+    template:
+      metadata:
+        labels:
+          app: simpleservice
+      spec:
+        containers:
+        - name: simpleservice    
+          image: 10.10.0.100:6088/simplemicroservice:1.0
+          ports:
+          - containerPort: 10000
+          resources:
+            requests:
+              memory: "500Mi"
+              cpu: "250m"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: simplesvc
+  spec:
+    selector: 
+      app: simpleservice
+    type: NodePort
+    ports:
+    - nodePort: 32000
+      port: 10000
