@@ -27,5 +27,26 @@ namespace CounterClaim.Controllers
         {
             return Json(new Result { Id = (model.X + 1) * (model.Y + 1) });
         }
+
+        public class PersonModel
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Abn { get; set; }
+        }
+
+        public class PostModelResult
+        {
+            public bool ValidFirstName { get; set; }
+            public bool ValidLastName { get; set; }
+            public string AbnStatus { get; set; }
+            public string Message { get; set; }
+        }
+        [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public JsonResult Form([FromBody]PersonModel model)
+        {
+            return Json(new PostModelResult { AbnStatus = "ABN is valid", ValidFirstName = true, ValidLastName = true, Message = "It works!" });
+        }
     }
 }

@@ -9,7 +9,7 @@ items:
     name: logging-pv
   spec:
     accessModes:
-      - "ReadWriteMany"
+      - "ReadWriteOnce"
     persistentVolumeReclaimPolicy: Retain
     # The storage class is needed because it will impact when the volume gets mounted.
     storageClassName: local-storage
